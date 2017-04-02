@@ -105,7 +105,7 @@ function buildActualLocation() {
       //console.log(school.schoolName);
 
       if(school.schoolName !== undefined) {
-        geocoder.geocode(school.schoolName + ' Victoria, Australia')
+        geocoder.geocode(school.schoolName + ' Victoria Australia')
           .then(function(res) {
             //console.log(res);
             if(res[0]) {
