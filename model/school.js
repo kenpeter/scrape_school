@@ -7,6 +7,7 @@ var SchoolSchema = new Schema({
   location: String,
   locationCoord: { lat: Number, lng: Number},
   medianScore: Number,
+  top40: Number,
   year: Number,
   dateCreated: { type: Date, default: Date.now },
   dateUpdated: { type: Date, default: Date.now },
@@ -30,7 +31,7 @@ SchoolDAO.prototype =  {
 
   delete: function(query) {
     return new Promise((resolve, reject) => {
-      SchoolDAO.remove(query, (err, data) => {
+      School.remove(query, (err, data) => {
         if(err) return reject(err);
         resolve(data);
       });

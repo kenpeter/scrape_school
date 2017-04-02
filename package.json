@@ -1,0 +1,16 @@
+{
+  "name": "scrape_school",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "kenpeter <figo2476@hotmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.16.0",
+    "bluebird": "^3.5.0",
+    "mongoose": "^4.9.2",
+    "osmosis": "^1.1.4"
+  },
+  "scripts": {
+    "start": "node scrape_school.js"
+  }
+}
