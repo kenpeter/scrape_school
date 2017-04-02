@@ -1,10 +1,24 @@
 const osmosis = require('osmosis');
 const Promise = require('bluebird');
 const axios = require('axios');
+var NodeGeocoder = require('node-geocoder');
 
 var SchoolDAO = require('./model/school');
 const schoolDAO = new SchoolDAO();
+const config = require('./config');
 
+//
+const options = {
+  provider: 'google',
+
+  // Optional depending on the providers
+  httpAdapter: 'https', // Default
+  apiKey: config.geocodekey, // for Mapquest, OpenCage, Google Premier
+  formatter: null         // 'gpx', 'string', ...
+};
+
+
+const geocoder = NodeGeocoder(options);
 const theBaseList = 'http://www.topscores.info/report.php?z=Vic&req=vce-school-rank-median-vce&year=2016&sortBy=n10&pageno=';
 //const theListLength = 26;
 const theListLength = 2;
@@ -54,7 +68,11 @@ function buildArr() {
               schoolName: schoolName,
               location: location,
               medianScore: medianScore,
-              top40: top40
+              top40: top40,
+
+              actualLocation: '',
+              lat: null,
+              lng: null
             }
 
             schoolArr.push(obj);
@@ -77,14 +95,59 @@ function buildArr() {
 
     });
   });
+}
+
+
+function buildActualLocation() {
+  return Promise.each(schoolArr, (school) => {
+    return new Promise((resolve, reject) => {
+
+      console.log('-- test --');
+      console.log(school.schoolName);
+
+      if(school.schoolName !== undefined) {
+        geocoder.geocode(school.schoolName + ' Victoria, Australia')
+          .then(function(res) {
+            console.log(res);
+            if(res[0]) {
+              let formattedAddress = res[0].formattedAddress;
+              let lat = res[0].latitude;
+              let lng = res[0].longitude;
+
+              school.actualLocation = formattedAddress;
+              school.lat = lat;
+              school.lng = lng;
+              resolve();
+            }
+            else {
+              console.error('no such addr');
+              reject();
+            }
+
+          })
+          .catch(function(err) {
+            console.log(err);
+            reject();
+          });
+        }
+        else {
+          resolve();
+        }
+    });
+  });
 
 }
+
+
 
 // Run
 schoolDAO
   .delete()
   .then(() => {
     return buildArr();
+  })
+  .then(() => {
+    return buildActualLocation();
   })
   .then(() => {
     console.log('---- all done ----');
