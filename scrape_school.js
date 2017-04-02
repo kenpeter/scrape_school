@@ -20,8 +20,8 @@ const options = {
 
 const geocoder = NodeGeocoder(options);
 const theBaseList = 'http://www.topscores.info/report.php?z=Vic&req=vce-school-rank-median-vce&year=2016&sortBy=n10&pageno=';
-//const theListLength = 26;
-const theListLength = 2;
+const theListLength = 26;
+//const theListLength = 2;
 let listArr = [];
 let schoolArr = [];
 
