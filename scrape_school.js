@@ -125,7 +125,7 @@ function buildActualLocation() {
             }
             else {
               console.error('no such addr');
-              console.log(school.schoolName + ' Victoria, Australia');
+              console.log(school.schoolName + ' Victoria Australia');
               resolve();
             }
 
