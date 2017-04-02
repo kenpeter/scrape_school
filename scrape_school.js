@@ -66,13 +66,12 @@ function buildArr() {
             let obj = {
               index: index,
               schoolName: schoolName,
-              location: location,
+              latLng: {},
+              location: '',
+
               medianScore: medianScore,
               top40: top40,
-
-              actualLocation: '',
-              lat: null,
-              lng: null
+              year: 2016, // hardcode ................!!!!!!!!!!!!!!!!
             }
 
             schoolArr.push(obj);
@@ -102,22 +101,27 @@ function buildActualLocation() {
   return Promise.each(schoolArr, (school) => {
     return new Promise((resolve, reject) => {
 
-      console.log('-- test --');
-      console.log(school.schoolName);
+      //console.log('-- test --');
+      //console.log(school.schoolName);
 
       if(school.schoolName !== undefined) {
         geocoder.geocode(school.schoolName + ' Victoria, Australia')
           .then(function(res) {
-            console.log(res);
+            //console.log(res);
             if(res[0]) {
               let formattedAddress = res[0].formattedAddress;
               let lat = res[0].latitude;
               let lng = res[0].longitude;
 
-              school.actualLocation = formattedAddress;
-              school.lat = lat;
-              school.lng = lng;
-              resolve();
+              school.location = formattedAddress;
+              school.latLng = { lat: lat, lng: lng };
+
+              schoolDAO
+                .save(school)
+                .then(() => {
+                  resolve();
+                });
+
             }
             else {
               console.error('no such addr');
@@ -138,8 +142,6 @@ function buildActualLocation() {
 
 }
 
-
-
 // Run
 schoolDAO
   .delete()
@@ -151,6 +153,6 @@ schoolDAO
   })
   .then(() => {
     console.log('---- all done ----');
-    console.log(schoolArr);
+    //console.log(schoolArr);
     process.exit(0);
   });

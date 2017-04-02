@@ -3,12 +3,15 @@ var mongodb = require('./connect');
 var Schema = mongodb.mongoose.Schema;
 
 var SchoolSchema = new Schema({
-  name: String,
+  index: Number,
+  schoolName: String,
+  latLng: { lat: Number, lng: Number},
   location: String,
-  locationCoord: { lat: Number, lng: Number},
+
   medianScore: Number,
   top40: Number,
   year: Number,
+  
   dateCreated: { type: Date, default: Date.now },
   dateUpdated: { type: Date, default: Date.now },
 });
